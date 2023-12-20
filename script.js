@@ -136,4 +136,41 @@ function createPlayer(name, symbol) {
   return { name, symbol };
 }
 
+const renderGame = (function () {
+  const gameContainer = document.querySelector(".game-container");
+  const board = Board;
+  function initializeRender() {
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        let gameField = document.createElement("div");
+        let gameFieldValue = document.createElement("p");
+        gameField.classList.add("game-field");
+        gameField.setAttribute("id", "game-field-" + i + "-" + j);
+        if (board.boardArray[i][j] !== 0) {
+          gameFieldValue.textContent = board.boardArray[i][j];
+        }
+        gameContainer.appendChild(gameField);
+        gameField.appendChild(gameFieldValue);
+      }
+    }
+  }
+  initializeRender();
+
+  function renderBoard() {
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        gameContainer.removeChild(gameField);
+        gameField.removeChild(gameFieldValue);
+        if (board.boardArray[i][j] !== 0) {
+          gameFieldValue.textContent = board.boardArray[i][j];
+        }
+        gameContainer.appendChild(gameField);
+        gameField.appendChild(gameFieldValue);
+      }
+    }
+  }
+  return { renderBoard };
+})();
+
 const game = GameController;
+const render = renderGame;
