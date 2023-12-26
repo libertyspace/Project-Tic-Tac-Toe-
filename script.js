@@ -29,10 +29,11 @@ const GameController = (function () {
   console.log("Player " + activePlayer.name + " turn!");
   function switchPlayer() {
     if (activePlayer === player1) {
-      return (activePlayer = player2);
+      activePlayer = player2;
     } else if (activePlayer === player2) {
-      return (activePlayer = player1);
+      activePlayer = player1;
     }
+    return activePlayer;
   }
   function checkWinner() {
     let zeroes = 0;
@@ -113,22 +114,23 @@ const GameController = (function () {
       if (!winner) {
         switchPlayer();
         console.log("Player " + activePlayer.name + " turn!");
-        return printBoard();
       } else {
         winner = false;
-        return printBoard();
       }
     }
+    return console.log(printBoard());
   }
 
   return {
     printBoard,
     player1,
     player2,
+    activePlayer,
     playRound,
     resetBoard,
     checkWinner,
     switchPlayer,
+    winner,
   };
 })();
 
@@ -139,38 +141,51 @@ function createPlayer(name, symbol) {
 const renderGame = (function () {
   const gameContainer = document.querySelector(".game-container");
   const board = Board;
-  function initializeRender() {
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        let gameField = document.createElement("div");
-        let gameFieldValue = document.createElement("p");
-        gameField.classList.add("game-field");
-        gameField.setAttribute("id", "game-field-" + i + "-" + j);
-        if (board.boardArray[i][j] !== 0) {
-          gameFieldValue.textContent = board.boardArray[i][j];
-        }
-        gameContainer.appendChild(gameField);
-        gameField.appendChild(gameFieldValue);
+  const game = GameController;
+  const playRound = (xAxis, yAxis) => game.playRound(xAxis, yAxis);
+  const printBoard = () => game.printBoard();
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      let gameField = document.createElement("div");
+      let gameFieldValue = document.createElement("p");
+      gameField.classList.add("game-field");
+      gameField.setAttribute("id", "game-field-" + i + "-" + j);
+      if (board.boardArray[i][j] !== 0) {
+        gameFieldValue.textContent = board.boardArray[i][j];
       }
+      gameContainer.appendChild(gameField);
+      gameField.appendChild(gameFieldValue);
     }
   }
-  initializeRender();
+
+  let gameField = document.querySelectorAll(".game-field");
+  gameField.forEach((e) =>
+    e.addEventListener("click", () => {
+      if (!GameController.checkWinner()) {
+        playRound(
+          parseInt(e.id.split("").at(-3)),
+          parseInt(e.id.split("").at(-1))
+        );
+        renderBoard();
+      }
+    })
+  );
 
   function renderBoard() {
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        gameContainer.removeChild(gameField);
-        gameField.removeChild(gameFieldValue);
-        if (board.boardArray[i][j] !== 0) {
-          gameFieldValue.textContent = board.boardArray[i][j];
-        }
-        gameContainer.appendChild(gameField);
-        gameField.appendChild(gameFieldValue);
+    let i = 0;
+    let j = 0;
+    gameField.forEach((e) => {
+      if (board.boardArray[i][j] !== 0) {
+        e.firstChild.textContent = board.boardArray[i][j];
       }
-    }
+      j++;
+      if (j > 2) {
+        j = 0;
+        i++;
+      }
+    });
   }
   return { renderBoard };
 })();
 
-const game = GameController;
 const render = renderGame;

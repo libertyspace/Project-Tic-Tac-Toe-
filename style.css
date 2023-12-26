@@ -81,6 +81,7 @@ body {
   background-color: #1e1e1e;
   color: white;
   max-height: auto;
+  font-family: sans-serif;
 }
 
 .grid-container {
@@ -97,12 +98,18 @@ body {
   
 }
 
+.game-field > p {
+  font-size: 2rem;
+}
+
 .game-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   width: 500px;
   height: 500px;
+  grid-column-start: 2;
+  grid-column-end: 3;
 }
 
 #game-field-0-0, #game-field-0-1, #game-field-0-2 {
@@ -118,4 +125,9 @@ body {
 
 #game-field-0-2, #game-field-1-2, #game-field-2-2 {
   border-right: 0px;
+}
+
+#section-main-2 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
 }
