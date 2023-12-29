@@ -92,10 +92,14 @@ body {
 
 .game-field {
   border: 1px solid white;
+  
+  
+}
+
+.flex-center-center {
   display: flex;
   justify-content: center;
   align-items: center;
-  
 }
 
 .game-field > p {
@@ -108,8 +112,7 @@ body {
   grid-template-rows: repeat(3, 1fr);
   width: 500px;
   height: 500px;
-  grid-column-start: 2;
-  grid-column-end: 3;
+  
 }
 
 #game-field-0-0, #game-field-0-1, #game-field-0-2 {
@@ -129,5 +132,30 @@ body {
 
 #section-main-2 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  justify-content: center;
+}
+
+#form {
+  display: grid;
+  gap: 10px;
+}
+
+@media (max-width: 600px) {
+  .game-container {
+    
+    width: 350px;
+    height: 400px;
+    
+  }
+}
+
+#dialog::backdrop{
+  background-color: black;
+  opacity: 0.8;
+}
+
+#main-section-1 {
+  display: flex;
+  justify-content: center;
+  height: 100px;
 }
