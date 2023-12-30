@@ -1,4 +1,4 @@
-// https://piccalil.li/blog/a-modern-css-reset
+
 
 /* Box sizing rules */
 *,
@@ -77,21 +77,59 @@ select {
 
 /* my code */
 
+:root {
+  --dark-500: #1e1e1e;
+  --dark-100: #707070;
+  --blue-100: #0E6BA8;
+  --silver-100: #F6F6F4;
+  --silver-300: #C6C5B9;
+  --tomato-300: #F95738;
+  --green-100: #60712F;
+}
+
 body {
   background-color: #1e1e1e;
-  color: white;
-  max-height: auto;
+  color: var(--silver-300);
+  
   font-family: sans-serif;
+  
+}
+
+header {
+  width: 100dvw;
+  height: 3rem;
+}
+
+footer {
+  width: 100dvw;
+  
 }
 
 .grid-container {
   display: grid;
-  grid-template-rows: 1fr 10fr 1fr;
+  grid-template-rows: 1fr 5fr 1fr;
   max-height: 100dvh;
+  width: 100%;
+  justify-content: center;
+  
+  gap : 1rem;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+#header-container{
+  background-color: var(--silver-300);
+  color: var(--dark-500);
+  height: 100%;
+  
 }
 
 .game-field {
-  border: 1px solid white;
+  border: 1px solid var(--green-100);
   
   
 }
@@ -140,6 +178,27 @@ body {
   gap: 10px;
 }
 
+#form > input {
+  background-color: var(--dark-100);
+  border-radius: 5px;
+  border: 0px;
+  padding-left: 0.5rem;
+  color: var(--silver-100);
+}
+
+#form > input:first-child {
+  color: var(--tomato-300);
+}
+
+#form > button {
+  border-radius: 100px;
+  border: 0px;
+  width: 100px;
+  justify-self: center;
+  font-size: 1rem;
+  padding: 0.3rem 0.6rem;
+}
+
 @media (max-width: 600px) {
   .game-container {
     
@@ -147,6 +206,28 @@ body {
     height: 400px;
     
   }
+  body {
+    width : 100%;
+  }
+
+  #main-section-1 {
+    flex-direction: column;
+  }
+
+  #footer-container {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1rem;
+    
+  }
+}
+
+
+#dialog {
+  background-color: var(--dark-500);
+  color: var(--silver-300);
+  border-radius: 10px;
+  border: 0px;
 }
 
 #dialog::backdrop{
@@ -157,5 +238,125 @@ body {
 #main-section-1 {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  
+  
+}
+
+#gameInfoContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 300px;
   height: 100px;
+  border-radius: 10px;
+}
+
+#scoreboardContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--green-100);
+  border-radius: 10px;
+  width: 300px;
+  height: 100px;
+  /* padding-left: 1rem; */
+}
+
+#scoreboardContainer > div:first-child {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  font-size: 1.2rem;
+  background-color: #60712F;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  
+}
+
+#scoreboardContainer > div:last-child {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0.5rem;
+}
+
+#scoreboardContainer > div:first-child > p {
+  
+}
+
+.playerX {
+  background-color: var(--blue-100);
+  color: var(--dark-500);
+}
+
+.playerO {
+  background-color: var(--tomato-300);
+  color: var(--dark-500);
+}
+
+.gameTied {
+  background-color: var(--silver-300);
+  color: var(--dark-500);
+}
+
+.player-x-symbol {
+  color: var(--blue-100)
+}
+
+.player-o-symbol {
+  color: var(--tomato-300)
+}
+
+#button-container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+#button-container > button {
+  border-radius: 100px;
+  border:0px;
+  padding: 0.3rem 0.6rem;
+}
+
+#footer-container {
+  background-color: var(--silver-300);
+  height: 100%;
+  color: var(--dark-500);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 1rem;
+}
+
+#footer-container > p {
+  font-family: daniel;
+  font-size: 2rem;
+}
+
+#footer-container > a > picture  {
+  width: 100px;
+}
+
+#footer-container > a > picture > svg {
+  fill: var(--dark-500)
+}
+
+#footer-container > a > picture > svg:hover {
+  fill: var(--blue-100);
+}
+
+
+
+#footer-container > picture > img {
+  border-radius: 100px;
+  width: 90px;
+}
+
+@font-face {
+  font-family: daniel;
+  src: url(./fonts/daniel/daniel.ttf);
 }

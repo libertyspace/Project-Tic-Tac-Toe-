@@ -1,9 +1,14 @@
 // Game Logic
 
+// IIFE creating the Board, giving us the function to return the board to the init state. And a variable passing the board
+
 const Board = (function () {
   let xAxis = 3;
   let yAxis = 3;
   let boardArray = [];
+
+  // setting the board(2D Array with 3 rows and 3 column of zeroes)
+
   function initializeBoard() {
     for (let i = 0; i < xAxis; i++) {
       boardArray[i] = [];
@@ -18,17 +23,23 @@ const Board = (function () {
   return { boardArray, initializeBoard };
 })();
 
+// This IIFE controls the game flow
+
 const GameController = (function () {
+  // creating the players, setting their playing symbol and setting the score to 0
+
   const player1 = createPlayer("Player 1", "X", 0);
   const player2 = createPlayer("Player 2", "O", 0);
-  const board = Board;
 
+  // calling in the Board IIFE with its functions/varialbes
+
+  const board = Board;
   printBoard = () => board.boardArray;
   resetBoard = () => board.initializeBoard();
+
   let activePlayer = player1;
   let winner = false;
 
-  console.log("Player " + activePlayer.name + " turn!");
   function switchPlayer() {
     if (activePlayer === player1) {
       activePlayer = player2;
@@ -38,9 +49,15 @@ const GameController = (function () {
     return activePlayer;
   }
 
+  function getActivePlayer() {
+    return activePlayer;
+  }
+
   function setWinner(value) {
     return (winner = value);
   }
+
+  // Function - Checks the winning conditions and returns the winner, or the game state Tied as a string
 
   function checkWinner() {
     let zeroes = 0;
@@ -113,7 +130,7 @@ const GameController = (function () {
       }
       if (zeroes === 0) {
         console.log("The game is tied! No winner!");
-        winner = true;
+        winner = "Tie";
       }
     }
 
@@ -139,11 +156,12 @@ const GameController = (function () {
         } else if (winner === player2) {
           setScore(player2);
           switchPlayer();
-        } else if (winner === true) {
+        } else if (winner === "Tie") {
           switchPlayer();
         }
       }
     }
+    display.updateGameInfo();
   }
 
   function setScore(player) {
@@ -176,11 +194,19 @@ const GameController = (function () {
     }
   }
 
-  function setPlayer(playerChoose, playerName) {
+  function setPlayerName(playerChoose, playerName) {
     if (playerChoose === 1) {
       player1.name = playerName;
     } else if (playerChoose === 2) {
       player2.name = playerName;
+    }
+  }
+
+  function setPlayerScore(playerChoose, playerScore) {
+    if (playerChoose === 1) {
+      player1.score = playerScore;
+    } else if (playerChoose === 2) {
+      player2.score = playerScore;
     }
   }
 
@@ -195,7 +221,9 @@ const GameController = (function () {
     switchPlayer,
     setWinner,
     getPlayer,
-    setPlayer,
+    setPlayerName,
+    getActivePlayer,
+    setPlayerScore,
   };
 })();
 
@@ -206,6 +234,7 @@ function createPlayer(name, symbol, score) {
 const renderGame = (function () {
   const gameContainer = document.querySelector(".game-container");
   const buttonNewGame = document.querySelector("#new-game");
+  const buttonRestartGame = document.querySelector("#restart-game");
   const board = Board;
   const game = GameController;
   for (let i = 0; i < 3; i++) {
@@ -228,21 +257,40 @@ const renderGame = (function () {
 
   function addTokenToBoard(event) {
     let e = event.target;
+    if (e.tagName === "P") {
+      e = e.parentElement;
+    }
     if (!game.checkWinner()) {
+      console.log(
+        parseInt(e.id.split("").at(-3)),
+        parseInt(e.id.split("").at(-1)),
+        e.tagName
+      );
       game.playRound(
         parseInt(e.id.split("").at(-3)),
         parseInt(e.id.split("").at(-1))
       );
+
       renderBoard();
     }
-    console.log(game.checkWinner());
   }
 
-  buttonNewGame.addEventListener("click", () => {
+  buttonNewGame.addEventListener("click", () => createNewRound());
+
+  function createNewRound() {
+    let display = displayController;
     board.initializeBoard();
     GameController.setWinner(false);
-
+    display.updateGameInfo();
     renderBoard();
+  }
+
+  buttonRestartGame.addEventListener("click", () => {
+    let display = displayController;
+    game.setPlayerScore(1, 0);
+    game.setPlayerScore(2, 0);
+    createNewRound();
+    display.updateScoreboard();
   });
 
   function renderBoard() {
@@ -250,7 +298,15 @@ const renderGame = (function () {
     let j = 0;
     gameField.forEach((e) => {
       if (board.boardArray[i][j] !== 0) {
-        e.firstChild.textContent = board.boardArray[i][j];
+        if (board.boardArray[i][j] === "X") {
+          e.firstChild.classList.add("player-x-symbol");
+          e.firstChild.classList.remove("player-o-symbol");
+          e.firstChild.textContent = board.boardArray[i][j];
+        } else if (board.boardArray[i][j] === "O") {
+          e.firstChild.classList.add("player-o-symbol");
+          e.firstChild.classList.remove("player-x-symbol");
+          e.firstChild.textContent = board.boardArray[i][j];
+        }
       } else {
         e.firstChild.textContent = "";
       }
@@ -273,9 +329,31 @@ const displayController = (function () {
   const submitButton = document.getElementById("submit-button");
 
   const section1 = document.querySelector("#main-section-1");
+  // const section3 = document.querySelector("#main-section-3");
   const scoreboard = document.createElement("div");
   const player1Text = document.createElement("p");
   const player2Text = document.createElement("p");
+  const gameInfo = document.createElement("div");
+  const gameInfoText = document.createElement("p");
+  const scoreboardText = document.createElement("p");
+  const scoreboardTextContainer = document.createElement("div");
+  const scoreboardContainer = document.createElement("div");
+
+  scoreboard.setAttribute("id", "scoreboardContainer");
+  gameInfo.setAttribute("id", "gameInfoContainer");
+
+  section1.appendChild(gameInfo);
+  section1.appendChild(scoreboard);
+
+  scoreboard.appendChild(scoreboardTextContainer);
+  scoreboard.appendChild(scoreboardContainer);
+  scoreboardTextContainer.appendChild(scoreboardText);
+  scoreboardContainer.appendChild(player1Text);
+  scoreboardContainer.appendChild(player2Text);
+  gameInfo.appendChild(gameInfoText);
+
+  scoreboardText.textContent = "Scoreboard";
+  dialog.showModal();
 
   function updateScoreboard() {
     player1Text.textContent =
@@ -284,17 +362,44 @@ const displayController = (function () {
       game.getPlayer(2).name + " score: " + game.getPlayer(2).score;
   }
 
-  section1.appendChild(scoreboard);
-  scoreboard.appendChild(player1Text);
-  scoreboard.appendChild(player2Text);
+  function updateGameInfo() {
+    if (!game.checkWinner()) {
+      if (game.getActivePlayer().name === game.getPlayer(1).name) {
+        gameInfo.classList.remove("gameTied");
+        gameInfo.classList.remove("playerO");
+        gameInfo.classList.add("playerX");
+        gameInfoText.textContent = game.getActivePlayer().name + "'s Turn!";
+      } else if (game.getActivePlayer().name === game.getPlayer(2).name) {
+        gameInfo.classList.remove("gameTied");
+        gameInfo.classList.remove("playerX");
+        gameInfo.classList.add("playerO");
+        gameInfoText.textContent = game.getActivePlayer().name + "'s Turn!";
+      }
+    } else if (game.checkWinner() === "Tie") {
+      gameInfo.classList.remove("playerX");
+      gameInfo.classList.remove("playerO");
+      gameInfo.classList.add("gameTied");
+      gameInfoText.textContent = "The game is Tied! No Winner!";
+    } else if (game.checkWinner().symbol === game.getPlayer(1).symbol) {
+      gameInfo.classList.remove("gameTied");
+      gameInfo.classList.remove("playerO");
+      gameInfo.classList.add("playerX");
+      gameInfoText.textContent = game.checkWinner().name + " wins!";
+    } else if (game.checkWinner().symbol === game.getPlayer(2).symbol) {
+      gameInfo.classList.remove("gameTied");
+      gameInfo.classList.remove("playerX");
+      gameInfo.classList.add("playerO");
+      gameInfoText.textContent = game.checkWinner().name + " wins!";
+    }
+  }
 
-  dialog.showModal();
   submitButton.addEventListener("click", () => {
-    game.setPlayer(1, inputPlayer1.value);
-    game.setPlayer(2, inputPlayer2.value);
+    game.setPlayerName(1, inputPlayer1.value);
+    game.setPlayerName(2, inputPlayer2.value);
     updateScoreboard();
+    updateGameInfo();
     console.log(inputPlayer1.value, inputPlayer2.value);
   });
 
-  return { updateScoreboard };
+  return { updateScoreboard, updateGameInfo };
 })();
