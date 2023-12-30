@@ -84,7 +84,7 @@ const GameController = (function () {
       ) {
         if (board.boardArray[0][i] === "X") {
           winner = player1;
-        } else if (board.boardArray[0][1] === "O") {
+        } else if (board.boardArray[0][i] === "O") {
           winner = player2;
         }
       }
